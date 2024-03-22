@@ -37,16 +37,6 @@ def extract_name_and_followers(text):
     extracted_followers = text[dash_position + 2:M_position]
     return extracted_name, extracted_followers
 
-def get_google_search_wikipedia_article(query):
-    try:
-        query = query + " wikipedia polski"
-        search_results = search(query, num=1, stop=1, pause=10)
-
-        return next(search_results)
-
-    except Exception as e:
-        return f"Error while Google search: {str(e)}"
-
 def get_wikipedia_img(url):
     response = requests.get(url)
     html_content = response.text
@@ -131,17 +121,13 @@ def extract_items(html_content):
             title = element.get_text(strip=True)
             title, followers = extract_name_and_followers(title)
 
-            #link = get_google_search_wikipedia_article(title)
-            
             name = title.replace(" ", "_")
             name = name.replace("’", "'")
             link = f"https://en.wikipedia.org/wiki/{name}"
-            print(link)
 
             img_src = get_wikipedia_img(link)
             if valid_wikipedia_image(img_src) == False:
                 link = f"https://pl.wikipedia.org/wiki/{name}"
-                print(link)
                 img_src = get_wikipedia_img(link)
             
             description = get_description(title)
@@ -178,7 +164,7 @@ def save_to_markdown_subpage(markdown_content, output_file):
 
 def main():
     url = 'https://www.favikon.com/blog/the-20-most-famous-tiktok-influencers-in-the-world'  
-    output_file = 'output.md' 
+    output_file = 'tiktokers.md' 
 
     html_content = download_page(url)
 
